@@ -289,8 +289,8 @@ function ListItem(props) {
                
                 <input 
                     type="text"
-                    className="form-control text-capitalize"
-                    placeholder="Deadline"
+                    className="form-control"
+                    placeholder="Deadline(ex. 2020-01-01)"
                     onChange={event => setNewItemDeadline(event.target.value)}/>
                 
             </div>
