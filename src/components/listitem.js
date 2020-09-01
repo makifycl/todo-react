@@ -4,29 +4,31 @@ import { Dropdown, Alert } from 'react-bootstrap';
 
 function ListItem(props) {
     const todoName = props.match.params.name;
-    const [todoItems, setTodoItems] = useState(null);
-    const [sortableItems, setsortableItems] = useState();
+    const [todoList, setTodoList] = useState(null);
+    const [todoItems, setTodoItems] = useState();
     const [sortBy, setSortBy] = useState();
     const [filterBy, setFilterBy] = useState();
+
     const [newItemName, setNewItemName] = useState();
     const [newItemDescription, setNewItemDescription] = useState();
     const [newItemDeadline, setNewItemDeadline] = useState();
     const [newDependentItemId, setNewDependentItemId] = useState();
+
     const [updatedTodoItemName, setUpdatedTodoItemName] = useState({});
     const [updatedTodoItemDescription, setUpdatedTodoItemDescription] = useState({});
     const [updatedTodoItemDeadline, setUpdatedTodoItemDeadline] = useState({});
+
     const [selectedTodoItem, setSelectedTodoItem] = useState();
+
     const [updateContainer, setUpdateContainer] = useState(false);
     const [dependentItem, setDependentItem] = useState();
+
     let history = useHistory(null);
     let token = null;
     let items = [];
     let dropDownTodoItems = [];
-    let cannotComplete = null;
 
     useEffect(() => {
-        console.log(todoName);
-        
         getTodo();
     }, []);
 
@@ -54,8 +56,8 @@ function ListItem(props) {
         await fetch(`http://localhost:8080/todo/by-name/${todoName}`, requestOptions)
             .then(response => response.json())
             .then(data =>{
-                setTodoItems(data);
-                setsortableItems(data.todoItems);
+                setTodoList(data);
+                setTodoItems(data.todoItems);
             })
             .catch(error => console.log("er: ", error));
     }
@@ -83,23 +85,18 @@ function ListItem(props) {
             }
         }
 
-        await fetch(`http://localhost:8080/todo/item/${todoItems.id}/${filterParam}/${reqParams}`, requestOptions)
+        await fetch(`http://localhost:8080/todo/item/${todoList.id}/${filterParam}/${reqParams}`, requestOptions)
             .then(response => response.json())
             .then(data =>{
-                setsortableItems(data.content);
-                console.log("todoitems123: ", data);
+                setTodoItems(data.content);
             })
             .catch(error => console.log("er: ", error));
     }
 
-    if (todoItems || sortableItems) {
+    if (todoItems) {
         let itemArr = null;
 
-        if(sortableItems) {
-            itemArr = sortableItems;
-        } else {
-            itemArr = todoItems.todoItems;
-        }
+        itemArr = todoItems;
 
         items = itemArr.map((item, key) => {
             
@@ -154,7 +151,7 @@ function ListItem(props) {
                 dependentItemId: newDependentItemId
             })
         }
-        await fetch(`http://localhost:8080/todo/item/${todoItems.id}`, requestOptions)
+        await fetch(`http://localhost:8080/todo/item/${todoList.id}`, requestOptions)
             .then(response => response.json())
             .then(data =>{
                 getTodoItems();
@@ -182,6 +179,10 @@ function ListItem(props) {
     let onOpenUpdateContainer = function(item) {
         setUpdateContainer(true);
         setSelectedTodoItem(item);
+    }
+
+    let onCloseUpdateContainer = function() {
+        setUpdateContainer(false);
     }
 
     let updateTodoItem = async function(event) {
@@ -220,8 +221,6 @@ function ListItem(props) {
         await fetch(`http://localhost:8080/todo/item/complete/${itemId}`, requestOptions)
         .then(response => response.json())
         .then(data =>{
-            console.log("rsp: ", data)
-            debugger;
             if (data.error && data.status != 200) {
                 alert(data.message);
             } else {
@@ -237,14 +236,10 @@ function ListItem(props) {
         setNewDependentItemId(todoItem.id);
     }
 
-    if (todoItems || sortableItems) {
+    if (todoItems) {
         let itemArr = null;
 
-        if(sortableItems) {
-            itemArr = sortableItems;
-        } else {
-            itemArr = todoItems.todoItems;
-        }
+        itemArr = todoItems;
 
         dropDownTodoItems = itemArr.map((item, key) => {
             
@@ -377,7 +372,7 @@ function ListItem(props) {
             <div className="container">
                         <div className="row">
                             <div className="col">
-                                <button type="button" className="btn btn-block btn-primary mt-3">
+                                <button type="button" className="btn btn-block btn-primary mt-3" onClick={() => onCloseUpdateContainer()}>
                                     Cancel 
                                 </button>
                             </div>
@@ -431,13 +426,7 @@ function ListItem(props) {
             </div>
 
         <ul className="list-group my-5">
-        
-            
-            
             {items}
-            <button type="button" className="btn btn-danger btn-block text-capitalize mt-5">
-                Clear List
-            </button>
         </ul>
     </div>
     </div>

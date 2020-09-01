@@ -38,9 +38,7 @@ function TodoList() {
         await fetch("http://localhost:8080/todo/page?sort=id,desc", requestOptions)
         .then(response => response.json())
         .then(result => {
-            console.log(result);
             setTodo(result.content);
-            console.log("TODO: ", todo);
         })
         .catch(error => console.log('error', error));
     }
@@ -87,7 +85,6 @@ function TodoList() {
             .then(response => response.json())
             .then(data => {
                 todoLists.push(data);
-                //getTodos();
             })
             .catch(error => console.log("Er: ", error));
     };
@@ -95,6 +92,10 @@ function TodoList() {
     let onOpenUpdateContainer = function(todo) {
         setUpdateContainer(true);
         setSelectedTodo(todo);
+    }
+
+    let onCloseUpdateContainer = function() {
+        setUpdateContainer(false);
     }
 
     let updateTodoList = async function(event) {
@@ -174,7 +175,7 @@ function TodoList() {
                     <div className="container">
                         <div className="row">
                             <div className="col">
-                                <button type="button" className="btn btn-block btn-primary mt-3">
+                                <button type="button" className="btn btn-block btn-primary mt-3" onClick={() => onCloseUpdateContainer()}>
                                     Cancel 
                                 </button>
                             </div>
@@ -194,9 +195,6 @@ function TodoList() {
                     Todo list
                 </h3>
                 {todoLists}
-                <button type="button" className="btn btn-danger btn-block text-capitalize mt-5">
-                    Clear List
-                </button>
             </ul>
         </div>
         </div>

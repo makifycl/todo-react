@@ -32,22 +32,14 @@ function Login() {
                 }
             })
             .then(data => {
-                console.log("RESULT: ", data);
                 storeToken(data);
                 history.push('/todo-list');
             })
             .catch(error => console.log("ERROR: ", error));
-
-        /*let result = await res.text();
-        console.log("result", result);
-        storeToken(result);
-        history.push('/todo-list')
-        console.log(result.toString());*/
         
     }
 
     const storeToken = function(jwtToken) {
-        console.log("jwtToken: ", jwtToken);
         localStorage.setItem("token", jwtToken);
     }
 
@@ -67,21 +59,12 @@ function Login() {
 
         <div>
            <p style= {{ visibility: loginError ? 'visible':'hidden' }}>
-                HATALI KULLANICI ADI VEYA PAROLA
+                INCORRECT USERNAME OR PASSWORD
            </p>
         </div>
 
-        <div className="form-group">
-            <div className="custom-control custom-checkbox">
-                <input type="checkbox" className="custom-control-input" id="customCheck1" />
-                <label className="custom-control-label" htmlFor="customCheck1">Remember me</label>
-            </div>
-        </div>
-
         <button type="submit" className="btn btn-primary btn-block">Submit</button>
-        <p className="forgot-password text-right">
-            Forgot <a href="#">password?</a>
-        </p>
+        
     </form>
     )
 }
